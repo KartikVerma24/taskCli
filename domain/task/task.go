@@ -1,6 +1,10 @@
 package task
 
-import "time"
+import (
+	"time"
+
+	"github.com/KartikVerma24/taskCli/domain"
+)
 
 type StatusOfTask int
 type PriorityOfTask int
@@ -30,7 +34,7 @@ type Task struct {
 
 func NewTask(id int, content string) (*Task, error) {
 	if content == "" {
-		return nil, ErrEmptyContent
+		return nil, domain.ErrEmptyContent
 	}
 
 	return &Task{
@@ -44,11 +48,11 @@ func NewTask(id int, content string) (*Task, error) {
 
 func (t *Task) ChangeStatus(newStatus StatusOfTask) error {
 	if t.status == newStatus {
-		return ErrNoStatusToChange
+		return domain.ErrNoStatusToChange
 	}
 
 	if !isValidStatusTransition(t.status, newStatus) {
-		return ErrInvalidStatusChange
+		return domain.ErrInvalidStatusChange
 	}
 
 	t.status = newStatus
@@ -66,7 +70,7 @@ func (t *Task) MarkAsDone() error {
 
 func (t *Task) ChangePriority(newPriority PriorityOfTask) error {
 	if t.priotity == newPriority {
-		return ErrNoPriorityToChange
+		return domain.ErrNoPriorityToChange
 	}
 
 	t.priotity = newPriority
