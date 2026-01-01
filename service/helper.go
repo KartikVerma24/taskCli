@@ -18,3 +18,18 @@ func MapPriority(inputPriority string) (task.PriorityOfTask, error) {
 		return task.Medium, ErrPriorityInput
 	}
 }
+
+func MapStatus(inputStatus string) (task.StatusOfTask, error) {
+	switch inputStatus {
+	case "todo": 
+		return task.Todo, nil
+	case "wip":
+		return task.WIP, nil
+	case "done":
+		return task.Done, nil
+	case "cancelled":
+		return task.Cancelled, nil
+	default:
+		return task.Todo, ErrStatusInput
+	}
+}

@@ -30,10 +30,21 @@ func (s *TaskService) AddNewTask(content string) (int, error) {
 	return savedTaskId, nil
 }
 
-func (s *TaskService) ChangeTaskPriority(priority string, id int) error {
-	mappedPriority, errMapping := MapPriority(strings.ToLower(priority))
-	if errMapping != nil {
-		return errMapping
+func (s *TaskService) ChangeTaskPriorityStatus(priority string, id int, status string, flag string) error {
+	var mappedPriority task.PriorityOfTask
+	var mappedStatus task.StatusOfTask
+	var errMapping error
+
+	if strings.ToLower(flag) == "p" {
+		mappedPriority, errMapping = MapPriority(strings.ToLower(priority))
+		if errMapping != nil {
+			return errMapping
+		}
+	} else {
+		mappedStatus, errMapping = MapStatus(status)
+		if errMapping != nil {
+			return errMapping
+		}
 	}
 
 	taskFromRepo, getTaskErr := s.taskRepo.FindByID(id)
@@ -41,14 +52,41 @@ func (s *TaskService) ChangeTaskPriority(priority string, id int) error {
 		return getTaskErr
 	}
 
-	changePriorityErr := taskFromRepo.ChangePriority(mappedPriority)
-	if changePriorityErr != nil {
-		return changePriorityErr
+	if strings.ToLower(flag) == "p" {
+		changePriorityErr := taskFromRepo.ChangePriority(mappedPriority)
+		if changePriorityErr != nil {
+			return changePriorityErr
+		}
+	} else {
+		changeStatusErr := taskFromRepo.ChangeStatus(mappedStatus)
+		if changeStatusErr != nil {
+			return changeStatusErr
+		}
 	}
 
-	return nil	
+	_, saveChangesErr := s.taskRepo.SaveTask(taskFromRepo)
+	if saveChangesErr != nil {
+		return saveChangesErr
+	}
+
+	return nil
 }
 
-// func (s *TaskService) ChangesTaskStatus(status string, id int) error {
+func (s *TaskService) CompleteTask(id int) error {
+	taskFromRepo, getTaskErr := s.taskRepo.FindByID(id)
+	if getTaskErr != nil {
+		return getTaskErr
+	}
 
-// }
+	markDoneErr := taskFromRepo.MarkAsDone()
+	if markDoneErr != nil {
+		return markDoneErr
+	}
+
+	_, saveChangesErr := s.taskRepo.SaveTask(taskFromRepo)
+	if saveChangesErr != nil {
+		return saveChangesErr
+	}
+
+	return nil
+}
