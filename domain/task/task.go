@@ -32,13 +32,12 @@ type Task struct {
 	completedAt time.Time
 }
 
-func NewTask(id int, content string) (*Task, error) {
+func NewTask(content string) (*Task, error) {
 	if content == "" {
 		return nil, domain.ErrEmptyContent
 	}
 
 	return &Task{
-		id:        id,
 		content:   content,
 		status:    Todo,
 		priotity:  Medium,
@@ -74,6 +73,11 @@ func (t *Task) ChangePriority(newPriority PriorityOfTask) error {
 	}
 
 	t.priotity = newPriority
+	return nil
+}
+
+func (t *Task) SetId(id int) error {
+	t.id = id
 	return nil
 }
 

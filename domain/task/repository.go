@@ -4,4 +4,5 @@ type Repo interface {
 	SaveTask(task *Task) (int, error)
 	FindByID(id int) (*Task, error)
 	Delete(id int) error
+	FindAll() ([]*Task, error)
 }

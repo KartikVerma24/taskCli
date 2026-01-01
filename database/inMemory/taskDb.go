@@ -27,6 +27,7 @@ func (t *TaskInMemRepo) SaveTask(task *task.Task) (int, error) {
 	taskId := t.nextID
 	t.nextID++
 
+	task.SetId(taskId)
 	t.data[taskId] = task
 	return taskId, nil
 }
@@ -51,4 +52,14 @@ func (t *TaskInMemRepo) Delete(id int) error {
 
 	delete(t.data, id)
 	return nil
+}
+
+func (t *TaskInMemRepo) FindAll() ([]*task.Task, error) {
+	allTaskSlice := make([]*task.Task, 0)
+
+	for _, val := range t.data {
+		allTaskSlice = append(allTaskSlice, val)
+	}
+
+	return allTaskSlice, nil
 }
