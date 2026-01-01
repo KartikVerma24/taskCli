@@ -21,6 +21,9 @@ func NewTaskInMemRepo() *TaskInMemRepo {
 }
 
 func (t *TaskInMemRepo) SaveTask(task *task.Task) (int, error) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
 	taskId := t.nextID
 	t.nextID++
 
@@ -38,6 +41,9 @@ func (t *TaskInMemRepo) FindByID(id int) (*task.Task, error) {
 }
 
 func (t *TaskInMemRepo) Delete(id int) error {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
 	_, exists := t.data[id]
 	if !exists {
 		return database.ErrTaskNotFound
