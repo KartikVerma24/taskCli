@@ -10,6 +10,15 @@ type TaskService struct {
 	taskRepo task.Repo
 }
 
+type TaskView struct {
+	Id             int
+	Description    string
+	Status         string
+	Priority       string
+	StartedTime    string
+	CompletionTime string
+}
+
 func NewTaskService(r task.Repo) *TaskService {
 	return &TaskService{
 		taskRepo: r,
@@ -89,4 +98,25 @@ func (s *TaskService) CompleteTask(id int) error {
 	}
 
 	return nil
+}
+
+func (s *TaskService) ListAllTasks() ([]TaskView, error) {
+	allTasks, getListErr := s.taskRepo.FindAll()
+	if getListErr != nil {
+		return nil, getListErr
+	}
+
+	view := make([]TaskView, 0)
+	for _, task := range allTasks {
+		view = append(view, TaskView{
+			Id:             task.GetId(),
+			Description:    task.GetContent(),
+			Status:         ReverseStatusMapping(task.GetTaskStatus()),
+			Priority:       ReversePriorityMapping(task.GetPriority()),
+			StartedTime:    GetTimeString(task.GetStartTime()),
+			CompletionTime: GetTimeString(task.GetCompletionTime()),
+		})
+	}
+
+	return view, nil
 }

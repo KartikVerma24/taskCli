@@ -92,3 +92,15 @@ func (t *Task) GetTaskStatus() StatusOfTask {
 func (t *Task) GetPriority() PriorityOfTask {
 	return t.priotity
 }
+
+func (t *Task) GetContent() string {
+	return t.content
+}
+
+func (t *Task) GetStartTime() time.Time {
+	return t.startedAt
+}
+
+func (t *Task) GetCompletionTime() time.Time {
+	return t.completedAt
+}

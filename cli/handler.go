@@ -15,3 +15,19 @@ func NewTaskHandler(t *NewTaskCommand, svc service.TaskService) error {
 	fmt.Println("Added new task with id : ", taskId)
 	return nil
 }
+
+func ListAllTasks(svc service.TaskService) error {
+	allTasks, err := svc.ListAllTasks()
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Task list ===============> ")
+
+	for _, val := range allTasks {
+		fmt.Printf("%v | %s | %s | %s | %s | %s", val.Id, val.Description, val.Status, val.Priority, val.StartedTime, val.CompletionTime)
+		fmt.Println()
+	}
+
+	return nil
+}
