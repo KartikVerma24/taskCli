@@ -81,6 +81,11 @@ func (t *Task) SetId(id int) error {
 	return nil
 }
 
+func (t *Task) SetPriority(newPriority PriorityOfTask) error {
+	t.priotity = newPriority
+	return nil
+}
+
 func (t *Task) GetId() int {
 	return t.id
 }

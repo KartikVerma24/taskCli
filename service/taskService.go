@@ -25,15 +25,25 @@ func NewTaskService(r task.Repo) *TaskService {
 	}
 }
 
-func (s *TaskService) AddNewTask(content string) (int, error) {
+var inValidTaskId = -1
+
+func (s *TaskService) AddNewTask(content string, priority string) (int, error) {
 	newTask, err := task.NewTask(content)
 	if err != nil {
-		return -1, err
+		return inValidTaskId, err
+	}
+
+	if priority != "" {
+		mappedPriority, errMapping := MapPriority(strings.ToLower(priority))
+		if errMapping != nil {
+			return inValidTaskId, errMapping
+		}
+		newTask.SetPriority(mappedPriority)
 	}
 
 	savedTaskId, saveTaskErr := s.taskRepo.SaveTask(newTask)
 	if saveTaskErr != nil {
-		return -1, saveTaskErr
+		return inValidTaskId, saveTaskErr
 	}
 
 	return savedTaskId, nil

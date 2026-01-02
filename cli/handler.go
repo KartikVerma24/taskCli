@@ -7,7 +7,7 @@ import (
 )
 
 func NewTaskHandler(t *NewTaskCommand, svc service.TaskService) error {
-	taskId, svcErr := svc.AddNewTask(t.description)
+	taskId, svcErr := svc.AddNewTask(t.description, t.priority)
 	if svcErr != nil {
 		return svcErr
 	}
