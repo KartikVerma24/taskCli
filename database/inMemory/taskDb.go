@@ -32,6 +32,16 @@ func (t *TaskInMemRepo) SaveTask(task *task.Task) (int, error) {
 	return taskId, nil
 }
 
+func (t *TaskInMemRepo) UpdateTask(task *task.Task) (int, error) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
+	tId := task.GetId()
+
+	t.data[tId] = task
+	return tId, nil
+}
+
 func (t *TaskInMemRepo) FindByID(id int) (*task.Task, error) {
 	task, exists := t.data[id]
 	if !exists {

@@ -5,4 +5,5 @@ type Repo interface {
 	FindByID(id int) (*Task, error)
 	Delete(id int) error
 	FindAll() ([]*Task, error)
+	UpdateTask(task *Task) (int, error)
 }

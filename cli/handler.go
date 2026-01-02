@@ -31,3 +31,23 @@ func ListAllTasks(svc service.TaskService) error {
 
 	return nil
 }
+
+func ChangeTaskHandler(t *ChangeTaskCommand, svc service.TaskService) error {
+	if t.newStatus != "" {
+		changeStatusErr := svc.ChangeTaskStatus(t.id, t.newStatus)
+		if changeStatusErr != nil {
+			return changeStatusErr
+		}
+		fmt.Println("Changed status of task : ", t.id)
+	}
+
+	if t.newPriority != "" {
+		changePriorityErr := svc.ChangeTaskPriority(t.id, t.newPriority)
+		if changePriorityErr != nil {
+			return changePriorityErr
+		}
+		fmt.Println("Changed priority of task : ", t.id)
+	}
+
+	return nil
+}
