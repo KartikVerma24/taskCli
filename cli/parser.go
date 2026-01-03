@@ -65,3 +65,21 @@ func DoneTaskParser(inputs []string) (*DoneTaskCommand, error) {
 		id: *id,
 	}, nil
 }
+
+func DeleteTaskParser(inputs []string) (*DeleteTaskCommand, error) {
+	fs := flag.NewFlagSet("delete", flag.ContinueOnError)
+	id := fs.Int("id", 0, "task id which needs to be deleted")
+	
+	parsingErr := fs.Parse(inputs)
+	if parsingErr != nil {
+		return nil, parsingErr
+	}
+
+	if *id == 0 {
+		return nil, ErrInvalidTask
+	}
+
+	return &DeleteTaskCommand{
+		id: *id,
+	}, nil
+}

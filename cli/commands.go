@@ -15,3 +15,7 @@ type ChangeTaskCommand struct {
 type DoneTaskCommand struct {
 	id int
 }
+
+type DeleteTaskCommand struct {
+	id int
+}

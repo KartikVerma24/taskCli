@@ -55,11 +55,6 @@ func (t *TaskInMemRepo) Delete(id int) error {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 
-	_, exists := t.data[id]
-	if !exists {
-		return database.ErrTaskNotFound
-	}
-
 	delete(t.data, id)
 	return nil
 }

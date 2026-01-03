@@ -24,6 +24,11 @@ func ListAllTasks(svc service.TaskService) error {
 
 	fmt.Println("Task list ===============> ")
 
+	if len(allTasks) == 0 {
+		fmt.Println("No tasks are present. To add new task use the 'add' command")
+		return nil
+	}
+
 	for _, val := range allTasks {
 		fmt.Printf("%v | %s | %s | %s | %s | %s", val.Id, val.Description, val.Status, val.Priority, val.StartedTime, val.CompletionTime)
 		fmt.Println()
@@ -59,6 +64,17 @@ func DoneTaskHandler(t *DoneTaskCommand, svc service.TaskService) error {
 	}
 
 	fmt.Printf("task %v is done", t.id)
+	fmt.Println()
+	return nil
+}
+
+func DeleteTaskHandler(t *DeleteTaskCommand, svc service.TaskService) error {
+	delTaskErr := svc.DeleteTask(t.id)
+	if delTaskErr != nil {
+		return delTaskErr
+	}
+
+	fmt.Printf("task %v is deleted", t.id)
 	fmt.Println()
 	return nil
 }

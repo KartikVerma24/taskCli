@@ -136,3 +136,17 @@ func (s *TaskService) ListAllTasks() ([]TaskView, error) {
 
 	return view, nil
 }
+
+func (s *TaskService) DeleteTask(id int) error {
+	_, getTaskErr := s.taskRepo.FindByID(id)
+	if getTaskErr != nil {
+		return getTaskErr
+	}
+
+	deleteErr := s.taskRepo.Delete(id)
+	if deleteErr != nil {
+		return deleteErr
+	}
+
+	return nil
+}
