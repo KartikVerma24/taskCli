@@ -23,6 +23,7 @@ const (
 	Critical
 )
 
+// Entity
 type Task struct {
 	id          int
 	content     string
@@ -32,6 +33,9 @@ type Task struct {
 	completedAt time.Time
 }
 
+// Entity Behaviours
+
+// constructors
 func NewTask(content string) (*Task, error) {
 	if content == "" {
 		return nil, domain.ErrEmptyContent
@@ -45,6 +49,26 @@ func NewTask(content string) (*Task, error) {
 	}, nil
 }
 
+func RehydrateTask(id int, content string, status StatusOfTask, priority PriorityOfTask, startedAt time.Time, completedAt time.Time) (*Task, error) {
+	if content == "" {
+		return nil, domain.ErrEmptyContent
+	}
+
+	if id == 0 {
+		return nil, domain.ErrInvalidTask
+	}
+
+	return &Task{
+		id:          id,
+		content:     content,
+		status:      status,
+		priotity:    priority,
+		startedAt:   startedAt,
+		completedAt: completedAt,
+	}, nil
+}
+
+// state changing methods
 func (t *Task) ChangeStatus(newStatus StatusOfTask) error {
 	if t.status == newStatus {
 		return domain.ErrNoStatusToChange
@@ -86,6 +110,7 @@ func (t *Task) SetPriority(newPriority PriorityOfTask) error {
 	return nil
 }
 
+// state getting methods
 func (t *Task) GetId() int {
 	return t.id
 }

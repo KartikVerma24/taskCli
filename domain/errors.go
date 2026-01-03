@@ -8,4 +8,5 @@ var (
 	ErrTaskAlreadyDone     = errors.New("task already completed")
 	ErrNoStatusToChange    = errors.New("current and new status are same")
 	ErrNoPriorityToChange  = errors.New("current and new priority are same")
+	ErrInvalidTask         = errors.New("invalid task")
 )
