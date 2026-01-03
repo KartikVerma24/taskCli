@@ -37,7 +37,9 @@ func RunCommands(inputs []string, svc service.TaskService) error {
 			return parseErr
 		}
 		return DeleteTaskHandler(parsedParam, svc)
+	case "help":
+		return PrintHelp()
 	default:
-		return ErrInvalidCommand
+		return InvalidCommandHandler()
 	}
 }

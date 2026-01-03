@@ -78,3 +78,17 @@ func DeleteTaskHandler(t *DeleteTaskCommand, svc service.TaskService) error {
 	fmt.Println()
 	return nil
 }
+
+func PrintHelp() error {
+	fmt.Println()
+	fmt.Println(help)
+	return nil
+}
+
+func InvalidCommandHandler() error {
+	fmt.Println(ErrInvalidCommand)
+	fmt.Println("Check out the available commands and their usage")
+	PrintHelp()
+
+	return nil
+}
