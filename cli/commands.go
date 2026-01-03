@@ -11,3 +11,7 @@ type ChangeTaskCommand struct {
 	newPriority string
 	description string
 }
+
+type DoneTaskCommand struct {
+	id int
+}

@@ -51,3 +51,14 @@ func ChangeTaskHandler(t *ChangeTaskCommand, svc service.TaskService) error {
 
 	return nil
 }
+
+func DoneTaskHandler(t *DoneTaskCommand, svc service.TaskService) error {
+	markDoneErr := svc.CompleteTask(t.id)
+	if markDoneErr != nil {
+		return markDoneErr
+	}
+
+	fmt.Printf("task %v is done", t.id)
+	fmt.Println()
+	return nil
+}

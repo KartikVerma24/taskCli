@@ -47,3 +47,21 @@ func ChangeTaskParser(inputs []string) (*ChangeTaskCommand, error) {
 		newPriority: *priority,
 	}, nil
 }
+
+func DoneTaskParser(inputs []string) (*DoneTaskCommand, error) {
+	fs := flag.NewFlagSet("done", flag.ContinueOnError)
+	id := fs.Int("id", 0, "task id which needs to be marked as done")
+
+	parsingErr := fs.Parse(inputs)
+	if parsingErr != nil {
+		return nil, parsingErr
+	}
+
+	if *id == 0 {
+		return nil, ErrInvalidTask
+	}
+
+	return &DoneTaskCommand{
+		id: *id,
+	}, nil
+}

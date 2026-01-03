@@ -25,6 +25,12 @@ func RunCommands(inputs []string, svc service.TaskService) error {
 			return parseErr
 		}
 		return ChangeTaskHandler(parsedParam, svc)
+	case "done":
+		parsedParam, parseErr := DoneTaskParser(inputs[1:])
+		if parseErr != nil {
+			return parseErr
+		}
+		return DoneTaskHandler(parsedParam, svc)
 	default:
 		return ErrInvalidCommand
 	}
