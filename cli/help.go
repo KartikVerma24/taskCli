@@ -43,4 +43,8 @@ var help = `Following are the available commands :-
 	
 	usage -
 		delete --id 1
+
+5. clear : to clear screen of the terminal
+	usage -
+		clear
 	`

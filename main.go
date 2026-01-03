@@ -41,6 +41,11 @@ func main() {
 			break
 		}
 
+		if line == "clear" {
+			fmt.Println("\033[H\033[2J")
+			continue
+		}
+
 		args, inputParseErr := shlex.Split(line)
 		if inputParseErr != nil {
 			fmt.Println("Error :", inputParseErr)
