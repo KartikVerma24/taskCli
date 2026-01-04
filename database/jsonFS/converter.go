@@ -20,3 +20,18 @@ func TaskFromJsonRecord(r taskRecordJson) (*task.Task, error) {
 
 	return t, nil
 }
+
+func JsonRecordFromTask(t *task.Task) (taskRecordJson) {
+	var record taskRecordJson
+	record.Id = t.GetId()
+	record.Content = t.GetContent()
+	record.Status = int(t.GetTaskStatus())
+	record.Priotity = int(t.GetPriority())
+	record.StartedAt = t.GetStartTime()
+	
+	if !t.GetCompletionTime().IsZero() {
+		record.CompletedAt = t.GetCompletionTime()
+	}
+
+	return record
+}

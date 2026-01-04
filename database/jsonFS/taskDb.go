@@ -31,6 +31,8 @@ type jsonData struct {
 	Tasks  []taskRecordJson `json:"tasks"`
 }
 
+var inValidID = -1
+
 func NewTaskJsonFSRepo(filePath string) (*TaskJsonFSRepo, error) {
 	repo := &TaskJsonFSRepo{
 		data:     make(map[int]*task.Task),
@@ -80,3 +82,79 @@ func (r *TaskJsonFSRepo) loadFileData() error {
 
 	return nil
 }
+
+func (t *TaskJsonFSRepo) SaveTask(task *task.Task) (int, error) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
+	if task.GetId() == 0 {
+		t.lastId++
+		task.SetId(t.lastId)
+	}
+
+	t.data[task.GetId()] = task
+	saveDataErr := t.saveDataToFile()
+	if saveDataErr != nil {
+		return inValidID, saveDataErr
+	}
+
+	return task.GetId(), nil
+}
+
+func (t *TaskJsonFSRepo) saveDataToFile() error {
+	records := make([]taskRecordJson, 0, len(t.data))
+
+	for _, t := range t.data {
+		rec := JsonRecordFromTask(t)
+		records = append(records, rec)
+	}
+
+	store := jsonData{
+		LastId: t.lastId,
+		Tasks:  records,
+	}
+
+	bytes, err := json.MarshalIndent(store, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	return writeFileAtomic(t.filePath, bytes)
+}
+
+// func (t *TaskJsonFSRepo) UpdateTask(task *task.Task) (int, error) {
+// 	t.mu.Lock()
+// 	defer t.mu.Unlock()
+
+// 	tId := task.GetId()
+
+// 	t.data[tId] = task
+// 	return tId, nil
+// }
+
+// func (t *TaskInMemRepo) FindByID(id int) (*task.Task, error) {
+// 	task, exists := t.data[id]
+// 	if !exists {
+// 		return nil, database.ErrTaskNotFound
+// 	}
+
+// 	return task, nil
+// }
+
+// func (t *TaskInMemRepo) Delete(id int) error {
+// 	t.mu.Lock()
+// 	defer t.mu.Unlock()
+
+// 	delete(t.data, id)
+// 	return nil
+// }
+
+// func (t *TaskInMemRepo) FindAll() ([]*task.Task, error) {
+// 	allTaskSlice := make([]*task.Task, 0)
+
+// 	for _, val := range t.data {
+// 		allTaskSlice = append(allTaskSlice, val)
+// 	}
+
+// 	return allTaskSlice, nil
+// }
