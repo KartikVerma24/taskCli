@@ -16,11 +16,20 @@ import (
 )
 
 var storeDir string
+var version = "taskCli v1.0.0"
 
 func main() {
-	flag.StringVar(&storeDir, "store", "", "directory to store task data")
-	flag.Parse()
+	var showVersion bool
 
+	flag.StringVar(&storeDir, "store", "", "directory to store task data")
+	flag.BoolVar(&showVersion, "version", false, "to show version of the app")
+	flag.Parse()
+	
+	if showVersion {
+		fmt.Println(version)
+		return
+	}
+	
 	storePath, err := utils.ResolveStorePath(storeDir)
 	if err != nil {
 		fmt.Println("Error with store path :", err)
