@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"os"
 	"strings"
@@ -11,16 +12,26 @@ import (
 	"github.com/KartikVerma24/taskCli/cli"
 	jsonfs "github.com/KartikVerma24/taskCli/database/jsonFS"
 	"github.com/KartikVerma24/taskCli/service"
+	"github.com/KartikVerma24/taskCli/utils"
 )
 
+var storeDir string
+
 func main() {
+	flag.StringVar(&storeDir, "store", "", "directory to store task data")
+	flag.Parse()
+
+	storePath, err := utils.ResolveStorePath(storeDir)
+	if err != nil {
+		fmt.Println("Error with store path :", err)
+		return
+	}
+
 	fmt.Println("Welcome to the taskCLI")
 	fmt.Println("Type 'help' to see commands, 'exit' to quit")
 
-	fPath := `D:\Coding\test.json`
-
 	// taskRepo := inmemory.NewTaskInMemRepo()
-	jsonRepo, err := jsonfs.NewTaskJsonFSRepo(fPath)
+	jsonRepo, err := jsonfs.NewTaskJsonFSRepo(storePath)
 	if err != nil {
 		fmt.Println("error in loading file : ", err)
 	}
