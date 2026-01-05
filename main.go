@@ -9,7 +9,7 @@ import (
 	"github.com/google/shlex"
 
 	"github.com/KartikVerma24/taskCli/cli"
-	inmemory "github.com/KartikVerma24/taskCli/database/inMemory"
+	jsonfs "github.com/KartikVerma24/taskCli/database/jsonFS"
 	"github.com/KartikVerma24/taskCli/service"
 )
 
@@ -17,8 +17,14 @@ func main() {
 	fmt.Println("Welcome to the taskCLI")
 	fmt.Println("Type 'help' to see commands, 'exit' to quit")
 
-	taskRepo := inmemory.NewTaskInMemRepo()
-	taskSvc := service.NewTaskService(taskRepo)
+	fPath := `D:\Coding\test.json`
+
+	// taskRepo := inmemory.NewTaskInMemRepo()
+	jsonRepo, err := jsonfs.NewTaskJsonFSRepo(fPath)
+	if err != nil {
+		fmt.Println("error in loading file : ", err)
+	}
+	taskSvc := service.NewTaskService(jsonRepo)
 
 	scanner := bufio.NewScanner(os.Stdin) // this creates an object which will read whatever is input by user
 

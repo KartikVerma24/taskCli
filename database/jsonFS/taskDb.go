@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/KartikVerma24/taskCli/database"
 	"github.com/KartikVerma24/taskCli/domain/task"
 )
 
@@ -43,7 +44,10 @@ func NewTaskJsonFSRepo(filePath string) (*TaskJsonFSRepo, error) {
 	// to check if the file exists or not
 	_, existsErr := os.Stat(filePath)
 	if os.IsNotExist(existsErr) {
-		return nil, existsErr
+		if err := repo.saveDataToFile(); err != nil {
+			return nil, err
+		}
+		return repo, nil
 	}
 
 	// if it does, load the details
@@ -60,6 +64,8 @@ func (r *TaskJsonFSRepo) loadFileData() error {
 	if errOpenFile != nil {
 		return errOpenFile
 	}
+
+	defer file.Close()
 
 	var allTaskData jsonData
 
@@ -122,39 +128,48 @@ func (t *TaskJsonFSRepo) saveDataToFile() error {
 	return writeFileAtomic(t.filePath, bytes)
 }
 
-// func (t *TaskJsonFSRepo) UpdateTask(task *task.Task) (int, error) {
-// 	t.mu.Lock()
-// 	defer t.mu.Unlock()
+func (t *TaskJsonFSRepo) UpdateTask(task *task.Task) (int, error) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
 
-// 	tId := task.GetId()
+	tId := task.GetId()
 
-// 	t.data[tId] = task
-// 	return tId, nil
-// }
+	t.data[tId] = task
+	saveDataErr := t.saveDataToFile()
+	if saveDataErr != nil {
+		return inValidID, saveDataErr
+	}
+	return tId, nil
+}
 
-// func (t *TaskInMemRepo) FindByID(id int) (*task.Task, error) {
-// 	task, exists := t.data[id]
-// 	if !exists {
-// 		return nil, database.ErrTaskNotFound
-// 	}
+func (t *TaskJsonFSRepo) FindByID(id int) (*task.Task, error) {
+	task, exists := t.data[id]
+	if !exists {
+		return nil, database.ErrTaskNotFound
+	}
 
-// 	return task, nil
-// }
+	return task, nil
+}
 
-// func (t *TaskInMemRepo) Delete(id int) error {
-// 	t.mu.Lock()
-// 	defer t.mu.Unlock()
+func (t *TaskJsonFSRepo) Delete(id int) error {
+	t.mu.Lock()
+	defer t.mu.Unlock()
 
-// 	delete(t.data, id)
-// 	return nil
-// }
+	delete(t.data, id)
+	saveDataErr := t.saveDataToFile()
+	if saveDataErr != nil {
+		return saveDataErr
+	}
 
-// func (t *TaskInMemRepo) FindAll() ([]*task.Task, error) {
-// 	allTaskSlice := make([]*task.Task, 0)
+	return nil
+}
 
-// 	for _, val := range t.data {
-// 		allTaskSlice = append(allTaskSlice, val)
-// 	}
+func (t *TaskJsonFSRepo) FindAll() ([]*task.Task, error) {
+	allTaskSlice := make([]*task.Task, 0)
 
-// 	return allTaskSlice, nil
-// }
+	for _, val := range t.data {
+		allTaskSlice = append(allTaskSlice, val)
+	}
+
+	return allTaskSlice, nil
+}
