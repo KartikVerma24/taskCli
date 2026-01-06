@@ -24,12 +24,14 @@ Built to practice clean Go project structure and CLI design.
 git clone https://github.com/KartikVerma24/taskCli.git
 cd taskCli
 go build -o taskCli .
+sudo cp taskCli /usr/local/bin/
+sudo mv taskCli /usr/bin/
 ```
 
 Run the CLI:
 
 ```bash
-./taskCli
+taskCli --version
 ```
 
 ---
