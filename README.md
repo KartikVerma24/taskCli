@@ -111,7 +111,19 @@ delete --id 1
 
 ---
 
-### 6. `clear` :- Clear the terminal screen
+### 6. `sort` :- Sort the tasks on the basis of priority or status
+
+**Tags**
+- `--by` *(mandatory)* : `status | priority`
+
+```bash
+sort --by status
+sort --by priority
+```
+
+---
+
+### 7. `clear` :- Clear the terminal screen
 
 ```bash
 clear
