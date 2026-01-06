@@ -39,6 +39,12 @@ func RunCommands(inputs []string, svc service.TaskService) error {
 		return DeleteTaskHandler(parsedParam, svc)
 	case "help":
 		return PrintHelp()
+	case "sort":
+		parsedParam, parseErr := SortTaskParser(inputs[1:])
+		if parseErr != nil {
+			return parseErr
+		}
+		return SortTaskHandler(parsedParam, svc)
 	default:
 		return InvalidCommandHandler()
 	}

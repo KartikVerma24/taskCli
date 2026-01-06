@@ -7,4 +7,5 @@ var (
 	ErrDescriptionRequired = errors.New("description is required for the command")
 	ErrEmptyInputs         = errors.New("atleast one input is required for the command")
 	ErrInvalidTask         = errors.New("invalid task, please select correct id. Use list-all to get all tasks")
+	ErrInvalidSortBasis    = errors.New("invalid parameter for the basis of sorting")
 )

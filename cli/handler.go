@@ -92,3 +92,25 @@ func InvalidCommandHandler() error {
 
 	return nil
 }
+
+func SortTaskHandler(t *SortTaskCommand, svc service.TaskService) error {
+	allTasks, err := svc.SortTasks(t.by)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Sorted list ===============> ")
+	fmt.Println("Basis : ", t.by)
+
+	if len(allTasks) == 0 {
+		fmt.Println("No tasks are present. To add new task use the 'add' command")
+		return nil
+	}
+
+	for _, val := range allTasks {
+		fmt.Printf("%v | %s | %s | %s | %s | %s", val.Id, val.Description, val.Status, val.Priority, val.StartedTime, val.CompletionTime)
+		fmt.Println()
+	}
+
+	return nil
+}

@@ -19,3 +19,7 @@ type DoneTaskCommand struct {
 type DeleteTaskCommand struct {
 	id int
 }
+
+type SortTaskCommand struct {
+	by string
+}

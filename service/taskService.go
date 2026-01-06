@@ -1,6 +1,7 @@
 package service
 
 import (
+	"sort"
 	"strings"
 
 	"github.com/KartikVerma24/taskCli/domain/task"
@@ -149,4 +150,38 @@ func (s *TaskService) DeleteTask(id int) error {
 	}
 
 	return nil
+}
+
+func (s *TaskService) SortTasks(basis string) ([]TaskView, error) {
+	allTasks, getListErr := s.taskRepo.FindAll()
+	if getListErr != nil {
+		return nil, getListErr
+	}
+
+	basisLow := strings.ToLower(basis)
+
+	sort.Slice(allTasks, func(i, j int) bool {
+		switch basisLow {
+		case "status":
+			return allTasks[i].GetTaskStatus() < allTasks[j].GetTaskStatus()
+		case "priority":
+			return allTasks[i].GetPriority() < allTasks[j].GetPriority()
+		default:
+			return false
+		}
+	})
+
+	view := make([]TaskView, 0)
+	for _, task := range allTasks {
+		view = append(view, TaskView{
+			Id:             task.GetId(),
+			Description:    task.GetContent(),
+			Status:         ReverseStatusMapping(task.GetTaskStatus()),
+			Priority:       ReversePriorityMapping(task.GetPriority()),
+			StartedTime:    GetTimeString(task.GetStartTime()),
+			CompletionTime: GetTimeString(task.GetCompletionTime()),
+		})
+	}
+
+	return view, nil
 }

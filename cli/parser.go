@@ -1,6 +1,9 @@
 package cli
 
-import "flag"
+import (
+	"flag"
+	"strings"
+)
 
 func NewTaskParse(inputs []string) (*NewTaskCommand, error) {
 	fs := flag.NewFlagSet("add", flag.ContinueOnError)
@@ -81,5 +84,27 @@ func DeleteTaskParser(inputs []string) (*DeleteTaskCommand, error) {
 
 	return &DeleteTaskCommand{
 		id: *id,
+	}, nil
+}
+
+func SortTaskParser(inputs []string) (*SortTaskCommand, error) {
+	fs := flag.NewFlagSet("sort", flag.ContinueOnError)
+	basis := fs.String("by", "", "flag which decides sorting should happen on the basis of status or priority")
+
+	parsingErr := fs.Parse(inputs)
+	if parsingErr != nil {
+		return nil, parsingErr
+	}
+
+	if *basis == "" {
+		return nil, ErrInvalidCommand
+	}
+
+	if strings.ToLower(*basis) != "status" && strings.ToLower(*basis) != "priority" {
+		return nil, ErrInvalidSortBasis
+	}
+
+	return &SortTaskCommand{
+		by: strings.ToLower(*basis),
 	}, nil
 }
