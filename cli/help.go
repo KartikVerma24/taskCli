@@ -47,4 +47,13 @@ var help = `Following are the available commands :-
 5. clear : to clear screen of the terminal
 	usage -
 		clear
+
+6. sort : to sort all the tasks on the basis of status or priority
+	tags -
+		by [mandatory] - basis of sorting
+			valid values = [status , priority]
+	
+	usage -
+		sort --by status
+		sort --by priority
 	`
